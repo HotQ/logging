@@ -1,0 +1,15 @@
+logging.sln
+.vscode
+.vs
+Debug
+Release
+CMakeFiles
+
+logging.vcxproj
+logging.vcxproj.*
+test
+logging
+cmake_install.cmake
+Makefile
+CMakeCache.txt
+tmp.log

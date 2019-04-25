@@ -1,6 +1,7 @@
 #include "Logger.h"
 namespace logging {
 
+#define logBufferLen 4096
 #define lvl2str(lvl) (lvl > 25 ? (lvl == level::FATAL ? "[FATAL]" : (lvl == level::WARN ? "[WARN]" : "[ERROR]")) \
 							   : (lvl == level::DEBUG ? "[DEBUG]" : (lvl == level::INFO ? "[INFO]" : "[NOTSET]")))
 
@@ -17,17 +18,21 @@ namespace logging {
 		strftime(buffer, 20, format, &tm);
 	}
 
-	void logging::Logger::logNow(int level, const char * file, int lineNo, const char * func, const char * info, ...) {
-		char buffer[20];
+	void logging::Logger::logNow(int level, const char * file, int lineNo, const char * func, const char * message, ...) {
+		char timeBuffer[20]{},
+			logBuffer[logBufferLen]{};
 		size_t milliseconds;
-		timestamp("%Y-%m-%d %H:%M:%S", buffer, milliseconds);
-		printf("%s.%03lu %s %s:% 3d %s() : ", buffer, milliseconds, lvl2str(level), file, lineNo, func);
-		if(info != nullptr){
+		timestamp("%Y-%m-%d %H:%M:%S", timeBuffer, milliseconds);
+
+		size_t flen = snprintf(logBuffer, logBufferLen, "%s.%03lu %s %s:% 3d %s() : ", timeBuffer, milliseconds, lvl2str(level), file, lineNo, func);
+		if (message != nullptr){
 			va_list args;
-			va_start(args, info);
-			vprintf(info, args);
+			va_start(args, message);
+			flen += vsnprintf(logBuffer + flen, logBufferLen - flen, message, args);
 			va_end(args);
 		}
-		printf("\n");
+		if (flen < logBufferLen)
+			flen += snprintf(logBuffer + flen, logBufferLen - flen, "\n");
+		printf("%s", logBuffer);
 	}
 } // namespace logging

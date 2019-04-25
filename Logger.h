@@ -10,20 +10,20 @@
 
 namespace logging {
 
+#ifdef _WIN32
+#define localtime_c(tm,now_c) localtime_s(&tm, &now_c)
+#else
+#define localtime_c(tm,now_c) localtime_r(&now_c,&tm)
+#endif 
+
 	enum level {
 		FATAL = 50,
 		ERROR = 40,
 		WARN = 30,
 		INFO = 20,
 		DEBUG = 10,
-		NOTSET = 10
+		NOTSET = 0
 	};
-
-#ifdef _WIN32
-#define localtime_c(tm,now_c) localtime_s(&tm, &now_c)
-#else
-#define localtime_c(tm,now_c) localtime_r(&now_c,&tm)
-#endif 
 
 	class Logger {
 	public:

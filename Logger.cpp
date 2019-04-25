@@ -17,10 +17,17 @@ namespace logging {
 		strftime(buffer, 20, format, &tm);
 	}
 
-	void logging::Logger::logNow(int level, const char * file, int lineNo, const char * func, const char * info) {
+	void logging::Logger::logNow(int level, const char * file, int lineNo, const char * func, const char * info, ...) {
 		char buffer[20];
 		size_t milliseconds;
 		timestamp("%Y-%m-%d %H:%M:%S", buffer, milliseconds);
-		printf("%s.%03lu %s %s:%d %s() : %s \n", buffer, milliseconds, lvl2str(level), file, lineNo, func, info != nullptr ? info : " ");
+		printf("%s.%03lu %s %s:% 3d %s() : ", buffer, milliseconds, lvl2str(level), file, lineNo, func);
+		if(info != nullptr){
+			va_list args;
+			va_start(args, info);
+			vprintf(info, args);
+			va_end(args);
+		}
+		printf("\n");
 	}
 } // namespace logging

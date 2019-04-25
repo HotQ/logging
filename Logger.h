@@ -4,6 +4,7 @@
 #include <iostream>
 #include <chrono>
 #include <ctime>
+#include <stdarg.h>
 
 #include "Singleton.h"
 
@@ -28,7 +29,7 @@ namespace logging {
 	public:
 		static std::shared_ptr<Logger> getInstance();
 		void timestamp(const char *format, char *buffer, size_t &milliseconds);
-		void logNow(int level, const char *file, int lineNo, const char *func, const char *info = nullptr);
+		void logNow(int level, const char *file, int lineNo, const char *func, const char *info = nullptr, ...);
 	};
 } // namespace logging
 

@@ -8,12 +8,14 @@ CMakeFiles
 logging.vcxproj
 logging.vcxproj.*
 test
-logging
+
 cmake_install.cmake
 Makefile
 CMakeCache.txt
 
 tmp.log
 test.py
-
+logging
 logging.conf
+stacktrace.h
+

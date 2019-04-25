@@ -5,6 +5,7 @@ project (logging)
 set (CMAKE_CXX_STANDARD 11)
 
 aux_source_directory(. DIR_SRCS)
+include_directories(.)
 
 add_executable(logging ${DIR_SRCS})
 

@@ -2,7 +2,6 @@
 #define SINGLETON_H
 
 #include <memory>
-
 namespace logging {
 
 	template <typename T>
@@ -21,6 +20,11 @@ namespace logging {
 		Singleton& operator = (const Singleton& t) = delete;
 
 		static std::shared_ptr<T> getInstance() {
+			if (instance.get() == nullptr) {
+				printf("fuckedup\n");
+				return nullptr;
+			}
+
 			return instance->m_instance;
 		}
 

@@ -1,6 +1,8 @@
 logging.sln
 .vscode
 .vs
+.DS_Store
+.editorconfig.txt
 Debug
 Release
 CMakeFiles

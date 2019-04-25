@@ -1,15 +1,14 @@
-﻿#include "Logger.h"
+#include "Logger.h"
 namespace logging {
 
 #define logBufferLen 4096
-#define lvl2str(lvl) (lvl > 25 ? (lvl == level::FATAL ? "[FATAL]" : (lvl == level::WARN ? "[WARN]" : "[ERROR]")) \
-							   : (lvl == level::DEBUG ? "[DEBUG]" : (lvl == level::INFO ? "[INFO]" : "[NOTSET]")))
-
 	std::shared_ptr<Logger> Logger::getInstance() {
 		return Singleton<Logger>::getInstance();
 	}
 
-	Logger::Logger():level(level::WARN){}
+	Logger::Logger() :level(level::WARN) {
+		handle = std::make_shared<StreamHandler>(stdout);
+	}
 
 	void Logger::timestamp(const char * format, char * buffer, size_t & milliseconds) {
 		std::chrono::time_point<std::chrono::system_clock, std::chrono::milliseconds> now = std::chrono::time_point_cast<std::chrono::milliseconds>(std::chrono::system_clock::now());
@@ -27,17 +26,18 @@ namespace logging {
 		timestamp("%Y-%m-%d %H:%M:%S", timeBuffer, milliseconds);
 
 		size_t flen = snprintf(logBuffer, logBufferLen, "%s.%03lu %s %s:% 3d %s() : ", timeBuffer, milliseconds, lvl2str(level), file, lineNo, func);
-		if (message != nullptr){
+		if (message != nullptr) {
 			flen += vsnprintf(logBuffer + flen, logBufferLen - flen, message, args);
 		}
 		if (flen < logBufferLen)
 			flen += snprintf(logBuffer + flen, logBufferLen - flen, "\n");
-		printf("%s", logBuffer);
+
+		handle->handle(logBuffer);
 	}
 
 	void Logger::info(const char * file, int lineNo, const char * func, const char * message, ...)
 	{
-		if(level>level::INFO) return;
+		if (level > level::INFO) return;
 		va_list args;
 		va_start(args, message);
 		vlog(level::INFO, file, lineNo, func, message, args);
@@ -46,7 +46,7 @@ namespace logging {
 
 	void Logger::warn(const char * file, int lineNo, const char * func, const char * message, ...)
 	{
-		if(level>level::WARN) return;
+		if (level > level::WARN) return;
 		va_list args;
 		va_start(args, message);
 		vlog(level::WARN, file, lineNo, func, message, args);
@@ -55,7 +55,7 @@ namespace logging {
 
 	void Logger::fatal(const char * file, int lineNo, const char * func, const char * message, ...)
 	{
-		if(level>level::FATAL) return;
+		if (level > level::FATAL) return;
 		va_list args;
 		va_start(args, message);
 		vlog(level::FATAL, file, lineNo, func, message, args);
@@ -64,7 +64,7 @@ namespace logging {
 
 	void Logger::error(const char * file, int lineNo, const char * func, const char * message, ...)
 	{
-		if(level>level::ERROR) return;
+		if (level > level::ERROR) return;
 		va_list args;
 		va_start(args, message);
 		vlog(level::ERROR, file, lineNo, func, message, args);
@@ -73,7 +73,7 @@ namespace logging {
 
 	void Logger::debug(const char * file, int lineNo, const char * func, const char * message, ...)
 	{
-		if(level>level::DEBUG) return;
+		if (level > level::DEBUG) return;
 		va_list args;
 		va_start(args, message);
 		vlog(level::DEBUG, file, lineNo, func, message, args);
@@ -82,15 +82,32 @@ namespace logging {
 
 	void Logger::notset(const char * file, int lineNo, const char * func, const char * message, ...)
 	{
-		if(level>level::NOTSET) return;
+		if (level > level::NOTSET) return;
 		va_list args;
 		va_start(args, message);
 		vlog(level::NOTSET, file, lineNo, func, message, args);
 		va_end(args);
 	}
 
-	void Logger::setLevel(logging::level levelname){
+	void Logger::setLevel(logging::level levelname) {
 		level = levelname;
+	}
+
+	void Logger::addHandler(std::shared_ptr<Handle> handle)
+	{
+		this->handle = handle;
+	}
+
+	void Logger::removeHandler()
+	{
+	}
+
+	void Logger::addFilter()
+	{
+	}
+
+	void Logger::removeFilter()
+	{
 	}
 
 } // namespace logging

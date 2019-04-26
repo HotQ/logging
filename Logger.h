@@ -4,29 +4,22 @@
 #include <iostream>
 #include <chrono>
 #include <ctime>
-#include <stdarg.h>
 
 #include "Singleton.h"
 #include "Fig.h"
 #include "Handle.h"
 namespace logging {
 
-#ifdef _WIN32
-#define localtime_c(tm,now_c) localtime_s(&tm, &now_c)
-#else
-#define localtime_c(tm,now_c) localtime_r(&now_c,&tm)
-#endif 
-
 	class Logger {
 		logging::level level;
 		std::shared_ptr<Handle> handle;
 
-		void vlog(int level, const char *file, int lineNo, const char *func, const char *message, va_list args);
+		void vlog(logging::level level, const char *file, int lineNo, const char *func, const char *message, va_list args);
 	public:
 		static std::shared_ptr<Logger> getInstance();
 		Logger();
 
-		void timestamp(const char *format, char *buffer, size_t &milliseconds);
+		void timestamp(struct tm & tm, short & milliseconds);
 
 		void info(const char *file, int lineNo, const char *func, const char *message = nullptr, ...);
 		void warn(const char *file, int lineNo, const char *func, const char *message = nullptr, ...);

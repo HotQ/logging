@@ -5,11 +5,15 @@ int main() {
 
 	logger->setLevel(logging::level::NOTSET);
 	logger->addHandler(streamHandler);
-	notset("\"here is the 1st test log with %p\"", NULL);
-	info("\"here is the 1st test log with %d arg\"", 1);
-	debug("\"here is the 2rd test log with %d %s\"", 3, "char");
+
+	const char *strStderr= "stderr",
+			   *strStdout= "stdout";
+				
+	notset("\"%s : here is the 1st test log with %p\"", strStderr,NULL);
+	info("\"%s : here is the 1st test log with %d arg\"", strStderr,1);
+	debug("\"%s : here is the 2rd test log with %d %s\"", strStderr,3, "char");
 	streamHandler->setStream(stdout);
-	warn("\"here is the 3rd test log with a fatal flag\"");
-	error("\"here is the 4rd test log with a error flag\"");
+	warn("\"%s : here is the 3rd test log with a fatal flag\"",strStdout);
+	error("\"%s : here is the 4rd test log with a error flag\"",strStdout);
 	return 0;
 }

@@ -12,7 +12,6 @@ namespace logging {
 	}
 
 	Logger::Logger() :level(level::WARN) {
-		handle = std::make_shared<StreamHandler>(stdout);
 	}
 
 	void Logger::timestamp(struct tm & tm, short & milliseconds) {
@@ -30,7 +29,10 @@ namespace logging {
 		if (message != nullptr)
 			vsnprintf(msg.get(), MSGBUFFERCOUNT, message, args);
 		Record record(level, tm, milliseconds, file, lineNo, func, msg);
-		handle->handle(record);
+		if(handles.size() == 0){
+			handles.emplace_back(new StreamHandler(stdout));
+		}
+		std::for_each(handles.cbegin(), handles.cend(),[&](std::shared_ptr<Handle> const & handle ){handle->handle(record);});
 	}
 
 	void Logger::info(const char * file, int lineNo, const char * func, const char * message, ...)
@@ -91,21 +93,17 @@ namespace logging {
 		level = levelname;
 	}
 
-	void Logger::addHandler(std::shared_ptr<Handle> handle)
-	{
-		this->handle = handle;
+	void Logger::addHandler(std::shared_ptr<Handle> handle){
+		handles.push_back(handle);
 	}
 
-	void Logger::removeHandler()
-	{
+	void Logger::removeHandler(){
 	}
 
-	void Logger::addFilter()
-	{
+	void Logger::addFilter(){
 	}
 
-	void Logger::removeFilter()
-	{
+	void Logger::removeFilter(){
 	}
 
 } // namespace logging

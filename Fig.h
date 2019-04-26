@@ -33,5 +33,4 @@ namespace logging {
 	};
 
 } // namespace logging
-
 #endif // !FIG_H

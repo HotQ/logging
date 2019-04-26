@@ -4,6 +4,7 @@
 #include <iostream>
 #include <chrono>
 #include <ctime>
+#include <vector>
 
 #include "Singleton.h"
 #include "Fig.h"
@@ -12,7 +13,7 @@ namespace logging {
 
 	class Logger {
 		logging::level level;
-		std::shared_ptr<Handle> handle;
+		std::vector<std::shared_ptr<Handle>> handles;
 
 		void vlog(logging::level level, const char *file, int lineNo, const char *func, const char *message, va_list args);
 	public:
@@ -34,6 +35,6 @@ namespace logging {
 		void addFilter();
 		void removeFilter();
 	};
+	
 } // namespace logging
-
 #endif // !LOGGER_H

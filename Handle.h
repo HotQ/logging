@@ -17,19 +17,45 @@ namespace logging {
 		void removeFilter();
 		void handle(struct Record const & record);
 
-		virtual void _handle(struct Record record) = 0;
+		virtual void emit(struct Record record) = 0;
 		virtual ~Handle() {};
 	};
 
 	class StreamHandler : public Handle {
+	protected:
 		FILE* stream;
 	public:
 		StreamHandler();
 		StreamHandler(FILE* stream);
 		FILE* setStream(FILE* stream);
 
-		virtual void _handle(struct Record record)override;
+		virtual void emit(struct Record record)override;
 		virtual ~StreamHandler() {};
+	};
+
+	class FileHandler : public StreamHandler {
+		class FilePtr{
+		public:
+			FILE* file;
+			FilePtr(const char * filename, const char * mode ){
+				file = fopen(filename,mode);
+			}
+			FILE *operator ->(){
+				return file;
+			}
+			~FilePtr(){
+				if(fclose(file)==EOF)
+					; // pass
+			}
+		};
+
+		std::shared_ptr<FilePtr> file = nullptr;
+	public:
+		FileHandler();
+		void setPath(const char * filename, const char * mode );
+		void close();
+
+		virtual ~FileHandler() {};
 	};
 
 } // namespace logging

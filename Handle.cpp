@@ -18,7 +18,7 @@ namespace logging
 		if (record.level >= this->level) {
 			if (fmter == nullptr)
 				fmter = std::make_shared<logging::Formatter>();
-			this->_handle(record);
+			this->emit(record);
 		}
 	}
 
@@ -28,11 +28,18 @@ namespace logging
 	FILE *StreamHandler::setStream(FILE *stream) {
 		return this->stream == stream ? nullptr : (this->stream = stream);
 	}
-	void StreamHandler::_handle(Record record)
+	void StreamHandler::emit(Record record)
 	{
 		char logBuffer[LOGBUFFERCOUNT]{};
 		fmter->format(logBuffer, LOGBUFFERCOUNT, record);
 		fprintf(stream, "%s", logBuffer);
 	}
 
+	FileHandler::FileHandler() {}
+	void FileHandler::setPath(const char * filename, const char * mode ){
+		this->file = std::make_shared<FilePtr>(filename,mode);
+		stream = this->file.get()->file;
+	}
+	
+	
 } // namespace logging

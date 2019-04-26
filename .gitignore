@@ -15,7 +15,7 @@ cmake_install.cmake
 Makefile
 CMakeCache.txt
 
-tmp.log
+*.log
 test.py
 logging
 logging.conf

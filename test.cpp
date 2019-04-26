@@ -5,7 +5,9 @@ int main() {
 
 	logger->setLevel(logging::level::NOTSET);
 	logger->addHandler(streamHandler);
-
+	auto handle = logging::Singleton<logging::FileHandler>::getInstance();
+	handle->setPath("./20190426.log","a");
+	logger->addHandler(handle);
 	const char *strStderr= "stderr",
 			   *strStdout= "stdout";
 				

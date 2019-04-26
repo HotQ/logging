@@ -5,7 +5,11 @@
 #include "Fig.h"
 #include "Formatter.h"
 namespace logging {
-
+#ifdef _WIN32
+#define fopenX(fp,filename,mode) fopen_s(&fp,filename,mode)
+#else
+#define fopenX(fp,filename,mode) fp = fopen(filename,mode)
+#endif 
 	class Handle {
 	protected:
 		logging::level level;
@@ -38,14 +42,13 @@ namespace logging {
 		public:
 			FILE* file;
 			FilePtr(const char * filename, const char * mode ){
-				file = fopen(filename,mode);
+				fopenX(file,filename,mode);
 			}
 			FILE *operator ->(){
 				return file;
 			}
 			~FilePtr(){
-				if(fclose(file)==EOF)
-					; // pass
+				fclose(file);
 			}
 		};
 

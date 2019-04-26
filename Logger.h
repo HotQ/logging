@@ -30,11 +30,11 @@ namespace logging {
 		void notset(const char *file, int lineNo, const char *func, const char *message = nullptr, ...);
 
 		void setLevel(logging::level levelname);
-		void addHandler(std::shared_ptr<Handle> handle);
+		void addHandler(std::shared_ptr<Handle> const &handle);
 		void removeHandler();
 		void addFilter();
 		void removeFilter();
 	};
-	
+
 } // namespace logging
 #endif // !LOGGER_H

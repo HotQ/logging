@@ -1,10 +1,11 @@
+#include <algorithm>
 #include "Logger.h"
 namespace logging {
 
 #ifdef _WIN32
-#define localtime_c(tm,now_c) localtime_s(&tm, &now_c)
+#define localtimeX(tm,now_c) localtime_s(&tm, &now_c)
 #else
-#define localtime_c(tm,now_c) localtime_r(&now_c, &tm)
+#define localtimeX(tm,now_c) localtime_r(&now_c, &tm)
 #endif 
 
 	std::shared_ptr<Logger> Logger::getInstance() {
@@ -18,7 +19,7 @@ namespace logging {
 		std::chrono::time_point<std::chrono::system_clock, std::chrono::milliseconds> now = std::chrono::time_point_cast<std::chrono::milliseconds>(std::chrono::system_clock::now());
 		std::time_t now_c = std::chrono::system_clock::to_time_t(now);
 		milliseconds = now.time_since_epoch().count() % 1000;
-		localtime_c(tm, now_c);
+		localtimeX(tm, now_c);
 	}
 
 	void Logger::vlog(logging::level level, const char * file, int lineNo, const char * func, const char * message, va_list args) {
@@ -93,7 +94,7 @@ namespace logging {
 		level = levelname;
 	}
 
-	void Logger::addHandler(std::shared_ptr<Handle> handle){
+	void Logger::addHandler(std::shared_ptr<Handle> const &handle){
 		handles.push_back(handle);
 	}
 

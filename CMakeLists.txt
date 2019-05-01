@@ -1,12 +1,13 @@
 cmake_minimum_required (VERSION 2.8)
 
-project (logging)
+project (logginglib)
 
 set (CMAKE_CXX_STANDARD 11)
 set (CMAKE_CXX_FLAGS "-Wall")
 
-aux_source_directory(. DIR_SRCS)
-include_directories(.)
+aux_source_directory(./source DIR_SRCS)
+include_directories(./include)
 
-add_executable(logging ${DIR_SRCS})
+SET(LIBRARY_OUTPUT_PATH ./shared)
+ADD_LIBRARY(logging STATIC ${DIR_SRCS})
 

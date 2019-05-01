@@ -15,9 +15,12 @@ cmake_install.cmake
 Makefile
 CMakeCache.txt
 
+*.out
 *.log
 test.py
 logging
 logging.conf
 stacktrace.h
 
+lib/
+shared/

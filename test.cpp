@@ -1,13 +1,22 @@
 ﻿#include "logging.h"
 
-int main() {
-	// using namespace std;
-
+void initLog(){
 	logger->setLevel(logging::level::NOTSET);
 	logger->addHandler(streamHandler);
+
 	auto handle = logging::Singleton<logging::FileHandler>::getInstance();
-	handle->setPath("./20190426.log","a");
+	char pathBuffer[4096]{};
+	tm tm; short ms;
+	logger->timestamp(tm,ms);
+	strftime(pathBuffer,4096,"./log/%Y-%m-%d.log",&tm);
+	printf("path %s\n",pathBuffer);
+	handle->setPath(pathBuffer,"a");
+
 	logger->addHandler(handle);
+}
+int main() {
+	initLog();
+
 	const char *strStderr= "stderr",
 			   *strStdout= "stdout";
 				
